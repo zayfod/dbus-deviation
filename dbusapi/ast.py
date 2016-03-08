@@ -25,6 +25,7 @@ from collections import OrderedDict
 from lxml import etree
 from re import match
 from dbusapi.log import Log
+from dbusapi.typeparser import TypeParser
 
 
 TP_DTD = 'http://telepathy.freedesktop.org/wiki/DbusSpec#extensions-v0'
@@ -50,6 +51,7 @@ class AstLog(Log):
         self.register_issue_code('interface-name')
         self.register_issue_code('method-name')
         self.register_issue_code('signal-name')
+        self.register_issue_code('invalid-signature')
         self.domain = 'ast'
 
 
@@ -433,7 +435,12 @@ class Property(BaseNode):
             log: subclass of `Log`, used to store log messages; can be None
         """
         super(Property, self).__init__(name, annotations, log)
-        self.type = type_
+        type_parser = TypeParser(type_)
+        signature = type_parser.parse()
+        if not signature:
+            self.log.log_issue('invalid-signature',
+                               type_parser.get_output()[0][3])
+        self.type = signature
         self.access = access
         self.interface = None
 
@@ -587,7 +594,12 @@ class Argument(BaseNode):
         """
         super(Argument, self).__init__(name, annotations, log)
         self.direction = direction or Argument.DIRECTION_IN
-        self.type = type_
+        type_parser = TypeParser(type_)
+        signature = type_parser.parse()
+        if not signature:
+            self.log.log_issue('invalid-signature',
+                               type_parser.get_output()[0][3])
+        self.type = signature
         self._index = -1
 
     @property

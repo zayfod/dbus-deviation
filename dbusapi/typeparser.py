@@ -76,8 +76,8 @@ class TypeParser(object):
             character = None
         return character
 
-    def _parse_one(self, character):
-        """Parse one character of a signature."""
+    def _parse_one_type(self, character):
+        """Parse one complete type from the signature."""
         if character == "y":
             return types.Byte()
         elif character == "b":
@@ -113,7 +113,7 @@ class TypeParser(object):
                 self._log.log_issue('invalid-type',
                                     'Incomplete array declaration.')
                 return None
-            one_type = self._parse_one(character)
+            one_type = self._parse_one_type(character)
             if not one_type:
                 # Invalid member type - error has already been logged.
                 return None
@@ -129,7 +129,7 @@ class TypeParser(object):
                     return None
                 if character == ")":
                     break
-                one_type = self._parse_one(character)
+                one_type = self._parse_one_type(character)
                 if not one_type:
                     # Invalid member type - error has already been logged.
                     return None
@@ -145,7 +145,7 @@ class TypeParser(object):
                     return None
                 if character == "}":
                     break
-                one_type = self._parse_one(character)
+                one_type = self._parse_one_type(character)
                 if not one_type:
                     # Invalid member type - error has already been logged.
                     return None
@@ -178,7 +178,7 @@ class TypeParser(object):
             if not character:
                 break
 
-            one_type = self._parse_one(character)
+            one_type = self._parse_one_type(character)
             if not one_type:
                 # Invalid type
                 break
