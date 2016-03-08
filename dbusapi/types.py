@@ -20,7 +20,7 @@
 class Type(object):
 
     """
-    AST representation of a D-Bus type.
+    An abstract class - AST representation of a D-Bus type.
 
     See http://dbus.freedesktop.org/doc/dbus-specification.html#type-system
     """
@@ -47,6 +47,8 @@ class Byte(Type):
 
     """
     AST representation of the D-Bus BYTE type.
+
+    8-bit unsigned integer.
     """
 
     def __init__(self):
@@ -61,6 +63,8 @@ class Boolean(Type):
 
     """
     AST representation of the D-Bus BOOLEAN type.
+
+    Boolean value, 0 is FALSE and 1 is TRUE. Everything else is invalid.
     """
 
     def __init__(self):
@@ -75,6 +79,8 @@ class Int16(Type):
 
     """
     AST representation of the D-Bus INT16 type.
+
+    16-bit signed integer.
     """
 
     def __init__(self):
@@ -89,6 +95,8 @@ class UInt16(Type):
 
     """
     AST representation of the D-Bus UINT16 type.
+
+    16-bit unsigned integer.
     """
 
     def __init__(self):
@@ -103,6 +111,8 @@ class Int32(Type):
 
     """
     AST representation of the D-Bus INT32 type.
+
+    32-bit signed integer.
     """
 
     def __init__(self):
@@ -117,6 +127,8 @@ class UInt32(Type):
 
     """
     AST representation of the D-Bus UINT32 type.
+
+    32-bit unsigned integer.
     """
 
     def __init__(self):
@@ -131,6 +143,8 @@ class Int64(Type):
 
     """
     AST representation of the D-Bus INT64 type.
+
+    64-bit signed integer.
     """
 
     def __init__(self):
@@ -145,6 +159,8 @@ class UInt64(Type):
 
     """
     AST representation of the D-Bus UINT64 type.
+
+    64-bit unsigned integer.
     """
 
     def __init__(self):
@@ -159,6 +175,8 @@ class Double(Type):
 
     """
     AST representation of the D-Bus DOUBLE type.
+
+    IEEE 754 double.
     """
 
     def __init__(self):
@@ -173,6 +191,9 @@ class String(Type):
 
     """
     AST representation of the D-Bus STRING type.
+
+    UTF-8 string (must be valid UTF-8). Must be nul terminated and contain no
+    other nul bytes.
     """
 
     def __init__(self):
@@ -187,6 +208,8 @@ class ObjectPath(Type):
 
     """
     AST representation of the D-Bus OBJECT_PATH type.
+
+    Name of an object instance.
     """
 
     def __init__(self):
@@ -215,6 +238,8 @@ class Variant(Type):
 
     """
     AST representation of the D-Bus VARIANT type.
+
+    Variant type - the type of the value is part of the value itself.
     """
 
     def __init__(self):
@@ -229,6 +254,8 @@ class UnixFD(Type):
 
     """
     AST representation of the D-Bus UNIX_FD type.
+
+    Unix file descriptor.
     """
 
     def __init__(self):
@@ -242,7 +269,7 @@ class UnixFD(Type):
 class Container(Type):
 
     """
-    AST representation of the D-Bus container type.
+    An abstract class - AST representation of the D-Bus container type.
     """
 
     def __init__(self):
@@ -315,7 +342,8 @@ class DictEntry(Container):
 class TypeSignature(object):
 
     """
-    AST representation of a D-Bus signature.
+    AST representation of a D-Bus signature - an ordered list of one or more
+    types.
 
     See http://dbus.freedesktop.org/doc/dbus-specification.html#type-system
     """
