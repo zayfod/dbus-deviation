@@ -59,3 +59,27 @@ class Log(object):
     def clear(self):
         """Clear the issue list."""
         self.issues = []
+
+
+class AstLog(Log):
+
+    """Specialized Log subclass for ast messages"""
+
+    def __init__(self):
+        """Construct a new AstLog"""
+        super(AstLog, self).__init__()
+        self.register_issue_code('unknown-node')
+        self.register_issue_code('empty-root')
+        self.register_issue_code('missing-attribute')
+        self.register_issue_code('duplicate-node')
+        self.register_issue_code('duplicate-interface')
+        self.register_issue_code('duplicate-method')
+        self.register_issue_code('duplicate-signal')
+        self.register_issue_code('duplicate-property')
+        self.register_issue_code('node-name')
+        self.register_issue_code('interface-name')
+        self.register_issue_code('method-name')
+        self.register_issue_code('signal-name')
+        self.register_issue_code('unknown-type')
+        self.register_issue_code('invalid-type')
+        self.domain = 'ast'

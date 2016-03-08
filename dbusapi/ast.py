@@ -24,35 +24,12 @@ from collections import OrderedDict
 # pylint: disable=no-member
 from lxml import etree
 from re import match
-from dbusapi.log import Log
+from dbusapi.log import AstLog
 from dbusapi.typeparser import TypeParser
 
 
 TP_DTD = 'http://telepathy.freedesktop.org/wiki/DbusSpec#extensions-v0'
 FDO_DTD = 'http://www.freedesktop.org/dbus/1.0/doc.dtd'
-
-
-class AstLog(Log):
-
-    """Specialized Log subclass for ast messages"""
-
-    def __init__(self):
-        """Construct a new AstLog"""
-        super(AstLog, self).__init__()
-        self.register_issue_code('unknown-node')
-        self.register_issue_code('empty-root')
-        self.register_issue_code('missing-attribute')
-        self.register_issue_code('duplicate-node')
-        self.register_issue_code('duplicate-interface')
-        self.register_issue_code('duplicate-method')
-        self.register_issue_code('duplicate-signal')
-        self.register_issue_code('duplicate-property')
-        self.register_issue_code('node-name')
-        self.register_issue_code('interface-name')
-        self.register_issue_code('method-name')
-        self.register_issue_code('signal-name')
-        self.register_issue_code('invalid-signature')
-        self.domain = 'ast'
 
 
 def ignore_node(node):
@@ -435,11 +412,8 @@ class Property(BaseNode):
             log: subclass of `Log`, used to store log messages; can be None
         """
         super(Property, self).__init__(name, annotations, log)
-        type_parser = TypeParser(type_)
+        type_parser = TypeParser(type_, log)
         signature = type_parser.parse()
-        if not signature:
-            self.log.log_issue('invalid-signature',
-                               type_parser.get_output()[0][3])
         self.type = signature
         self.access = access
         self.interface = None
@@ -594,11 +568,8 @@ class Argument(BaseNode):
         """
         super(Argument, self).__init__(name, annotations, log)
         self.direction = direction or Argument.DIRECTION_IN
-        type_parser = TypeParser(type_)
+        type_parser = TypeParser(type_, log)
         signature = type_parser.parse()
-        if not signature:
-            self.log.log_issue('invalid-signature',
-                               type_parser.get_output()[0][3])
         self.type = signature
         self._index = -1
 

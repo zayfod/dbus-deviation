@@ -17,28 +17,7 @@
 # along with this library.  If not, see <http://www.gnu.org/licenses/>.
 
 from dbusapi import types
-from dbusapi.log import Log
-
-
-class TypeParserLog(Log):
-
-    """Specialized Log subclass for type parser messages."""
-
-    def __init__(self, filename=None):
-        """
-        Construct a new TypeParserLog.
-
-        Args:
-            filename: the name of the file being parsed.
-        """
-        super(TypeParserLog, self).__init__()
-        self.__filename = filename
-        self.domain = 'type_parser'
-        self.register_issue_code('unknown-type')
-        self.register_issue_code('invalid-type')
-
-    def _create_entry(self, code, message):
-        return self.__filename, self.domain, code, message
+from dbusapi.log import AstLog
 
 
 class TypeParser(object):
@@ -56,7 +35,7 @@ class TypeParser(object):
             log: the name of the file being parsed.
         """
         self.signature = signature
-        self._log = log or TypeParserLog()
+        self._log = log or AstLog()
         self._index = 0
 
     def get_output_codes(self):

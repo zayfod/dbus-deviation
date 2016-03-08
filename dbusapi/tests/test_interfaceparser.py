@@ -186,7 +186,7 @@ class TestParserErrors(unittest.TestCase):
             "<node><interface name='I.I'>"
             "<signal name='S'><arg name='N' type='?'/></signal>"
             "</interface></node>", [
-                ('invalid-signature',
+                ('unknown-type',
                  'Unknown type ‘?’.'),
             ])
 
@@ -205,7 +205,7 @@ class TestParserErrors(unittest.TestCase):
             "<node><interface name='I.I'>"
             "<property name='P' type='a?' access='readwrite'/>"
             "</interface></node>", [
-                ('invalid-signature',
+                ('unknown-type',
                  'Unknown type ‘?’.'),
             ])
 

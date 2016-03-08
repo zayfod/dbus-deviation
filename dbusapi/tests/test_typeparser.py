@@ -41,7 +41,7 @@ class TestParserErrors(unittest.TestCase):
         (parser, types) = _test_parser(signature)
         self.assertEqual(types, None)
         actual_output = \
-            [(None, 'type_parser', i[0], i[1]) for i in partial_output]
+            [(None, 'ast', i[0], i[1]) for i in partial_output]
         self.assertEqual(parser.get_output(), actual_output)
 
     def test_reserved_struct(self):
