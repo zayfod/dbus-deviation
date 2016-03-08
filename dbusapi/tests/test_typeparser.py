@@ -40,7 +40,8 @@ class TestParserErrors(unittest.TestCase):
     def assertOutput(self, signature, partial_output):  # noqa
         (parser, types) = _test_parser(signature)
         self.assertEqual(types, None)
-        actual_output = [(i[0], i[1]) for i in partial_output]
+        actual_output = \
+            [(None, 'type_parser', i[0], i[1]) for i in partial_output]
         self.assertEqual(parser.get_output(), actual_output)
 
     def test_unknown_type(self):

@@ -17,6 +17,19 @@
 # along with this library.  If not, see <http://www.gnu.org/licenses/>.
 
 from dbusapi import types
+from dbusapi.log import Log
+
+
+class TypeParserLog(Log):
+
+    """Specialized Log subclass for type parser messages."""
+
+    def __init__(self):
+        """Construct a new TypeParserLog"""
+        super(TypeParserLog, self).__init__()
+        self.register_issue_code('unknown-type')
+        self.register_issue_code('invalid-type')
+        self.domain = 'type_parser'
 
 
 class TypeParser(object):
@@ -27,7 +40,7 @@ class TypeParser(object):
     This validates the string, but not exceedingly strictly..
     """
 
-    def __init__(self, signature):
+    def __init__(self, signature, log=None):
         """
         Construct a new TypeParser.
 
@@ -35,24 +48,16 @@ class TypeParser(object):
             signature: A D-Bus type string.
         """
         self.signature = signature
-        self._output = []
+        self.log = log or TypeParserLog()
         self._index = 0
 
-    @staticmethod
-    def get_output_codes():
+    def get_output_codes(self):
         """Return a list of all possible output codes."""
-        # FIXME: Hard-coded for the moment.
-        return [
-            'unknown-type',
-        ]
-
-    def _issue_output(self, code, message):
-        """Append a message to the parser output."""
-        self._output.append((code, message))
+        return self.log.issue_codes
 
     def get_output(self):
         """Return a list of all logged parser messages."""
-        return self._output
+        return self.log.issues
 
     def _get_next_character(self):
         """Return the next character from the signature."""
@@ -97,7 +102,7 @@ class TypeParser(object):
             res = types.Array()
             character = self._get_next_character()
             if not character:
-                self._issue_output('invalid-type',
+                self.log.log_issue('invalid-type',
                                    'Incomplete array declaration.')
                 return None
             one_type = self._parse_one(character)
@@ -111,7 +116,7 @@ class TypeParser(object):
             while True:
                 character = self._get_next_character()
                 if not character:
-                    self._issue_output('invalid-type',
+                    self.log.log_issue('invalid-type',
                                        'Incomplete structure declaration.')
                     return None
                 if character == ")":
@@ -127,7 +132,7 @@ class TypeParser(object):
             while True:
                 character = self._get_next_character()
                 if not character:
-                    self._issue_output('invalid-type',
+                    self.log.log_issue('invalid-type',
                                        'Incomplete dictionary declaration.')
                     return None
                 if character == "}":
@@ -137,13 +142,13 @@ class TypeParser(object):
                     # Invalid member type
                     return None
                 if len(res.members) >= 2:
-                    self._issue_output('invalid-type',
+                    self.log.log_issue('invalid-type',
                                        'Invalid dictionary declaration.')
                     return None
                 res.members.append(one_type)
             return res
         else:
-            self._issue_output('unknown-type',
+            self.log.log_issue('unknown-type',
                                'Unknown type ‘%s’.' % character)
             return None
 
@@ -156,7 +161,6 @@ class TypeParser(object):
 
             If parsing fails, None is returned.
         """
-        self._output = []
         self._index = 0
 
         out = types.TypeSignature()
@@ -172,8 +176,7 @@ class TypeParser(object):
 
             out.members.append(one_type)
 
-        # Squash output on error.
-        if self._output:
+        if self.log.issues:
             return None
 
         return out
